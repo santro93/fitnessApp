@@ -3,8 +3,10 @@ import 'package:urban_fit/model/water_tracker_model.dart';
 import 'package:urban_fit/service/database_helper.dart';
 
 class WaterTrackBottomSheet extends StatefulWidget {
+  int? userId;
   void Function() addtrack;
-  WaterTrackBottomSheet({Key? key, required this.addtrack}) : super(key: key);
+  WaterTrackBottomSheet(
+      {Key? key, required this.addtrack, required this.userId});
   @override
   State<WaterTrackBottomSheet> createState() => _WaterTrackBottomSheetState();
 }
@@ -24,7 +26,7 @@ class _WaterTrackBottomSheetState extends State<WaterTrackBottomSheet> {
   Future<void> addWaterTracker() async {
     final WaterModel newWaterTracker = WaterModel(
       // id: 33,
-      waterUserId: '1',
+      waterUserId: widget.userId,
       waterGlass: waterNameController.text,
       waterDate:
           '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
@@ -87,7 +89,7 @@ class _WaterTrackBottomSheetState extends State<WaterTrackBottomSheet> {
               height: 2,
             ),
             TextFormField(
-              keyboardType: TextInputType.name,
+              keyboardType: TextInputType.number,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               controller: waterNameController,
               decoration: const InputDecoration(

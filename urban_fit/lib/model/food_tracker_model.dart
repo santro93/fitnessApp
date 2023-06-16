@@ -1,6 +1,6 @@
 class FoodModel {
   final int? id;
-  final String userid;
+  final int? userid;
   final String foodname;
   final String unit;
   final String date;
@@ -8,7 +8,7 @@ class FoodModel {
 
   FoodModel({
     this.id,
-    required this.userid,
+    this.userid,
     required this.foodname,
     required this.unit,
     required this.date,

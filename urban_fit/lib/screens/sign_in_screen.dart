@@ -47,7 +47,8 @@ class _SigninPageState extends State<SigninPage> {
       final password = passwordController.text;
       final user = await DataBaseHelper.instance.getUserByEmail(email);
       if (user != null && user.password == password) {
-        // userId =
+        userId = user.id;
+        print(" user Id logged In $userId");
         try {
           final SharedPreferences sharedPreferences =
               await SharedPreferences.getInstance();
@@ -57,10 +58,11 @@ class _SigninPageState extends State<SigninPage> {
           log(result);
         }
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const DashboardScreen(),
+              builder: (context) => DashboardScreen(userId: userId),
             ));
       } else {
         const snackBar = SnackBar(

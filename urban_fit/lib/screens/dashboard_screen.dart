@@ -7,9 +7,9 @@ import 'package:urban_fit/utils/appimages.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 import 'water_tracker/water_tracker_screen.dart';
 
-
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  int? userId;
+  DashboardScreen({super.key, required this.userId});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -47,7 +47,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UserProfileScreen(),
+                    builder: (context) =>
+                        UserProfileScreen(userId: widget.userId),
                   ),
                 );
               },
@@ -75,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const FoodTrackerScreen(),
+                builder: (context) => FoodTrackerScreen(userId: widget.userId),
               ),
             );
           },
@@ -87,7 +88,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const WaterTrackerScreen(),
+                builder: (context) => WaterTrackerScreen(userId: widget.userId),
               ),
             );
           },
@@ -99,7 +100,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const WorkoutTrackerScreen(),
+                builder: (context) =>
+                    WorkoutTrackerScreen(userId: widget.userId),
               ),
             );
           },
@@ -111,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const SleepTrackerScreen(),
+                builder: (context) => SleepTrackerScreen(userId: widget.userId),
               ),
             );
           },

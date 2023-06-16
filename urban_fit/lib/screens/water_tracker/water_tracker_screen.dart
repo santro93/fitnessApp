@@ -6,7 +6,8 @@ import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
 class WaterTrackerScreen extends StatefulWidget {
-  const WaterTrackerScreen({super.key});
+  int? userId;
+  WaterTrackerScreen({super.key, required this.userId});
 
   @override
   State<WaterTrackerScreen> createState() => _WaterTrackerScreenState();
@@ -24,7 +25,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   }
 
   Future<void> refreshWaterTrackers() async {
-    final List<WaterModel> list = await database!.queryAllWaterTrackerEntitis();
+    final List<WaterModel> list = await database!.queryAllWaterTrackerEntitis(widget.userId!);
     setState(() {
       waterTrackers = list;
     });
@@ -33,7 +34,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   void updateWaterTracker(int id) async {
     final WaterModel updatedWaterTracker = WaterModel(
       id: 2,
-      waterUserId: '2',
+      waterUserId: widget.userId,
       waterDate: '2023-06-15',
       waterTime: '3:00 PM',
       waterGlass: 'f24',
@@ -60,7 +61,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DashboardScreen(),
+                  builder: (context) => DashboardScreen(userId: widget.userId),
                 ));
           },
           icon: const Icon(
@@ -143,6 +144,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: SafeArea(
             child: WaterTrackBottomSheet(
+              userId: widget.userId,
               addtrack: () {
                 refreshWaterTrackers();
               },

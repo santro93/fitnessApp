@@ -7,7 +7,8 @@ import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 import '../dashboard_screen.dart';
 
 class WorkoutTrackerScreen extends StatefulWidget {
-  const WorkoutTrackerScreen({super.key});
+  int? userId;
+  WorkoutTrackerScreen({super.key, required this.userId});
 
   @override
   State<WorkoutTrackerScreen> createState() => _WorkoutTrackerScreenState();
@@ -26,7 +27,7 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
 
   Future<void> refreshWorkoutTrackers() async {
     final List<WorkoutModel> list =
-        await database!.queryAllWorkoutTrackerEntitis();
+        await database!.queryAllWorkoutTrackerEntitis(widget.userId!);
     setState(() {
       workTrackers = list;
     });
@@ -35,7 +36,7 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
   void updateWorkoutTracker(int id) async {
     final WorkoutModel updatedWorkoutTracker = WorkoutModel(
       id: 2,
-      workUserId: '2',
+      workUserId: widget.userId,
       workoutName: 'Dum Bells',
       workoutTime: '3:00 PM',
       workoutDate: '2023-06-15',
@@ -62,7 +63,7 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DashboardScreen(),
+                  builder: (context) => DashboardScreen(userId: widget.userId),
                 ));
           },
           icon: const Icon(
@@ -143,6 +144,7 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: SafeArea(
             child: WorkoutTrackBottomSheet(
+              userId: widget.userId,
               addtrack: () {
                 refreshWorkoutTrackers();
               },

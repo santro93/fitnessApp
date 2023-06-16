@@ -78,7 +78,7 @@ class DataBaseHelper {
         await db.execute('''
           CREATE TABLE $foodTrackerTable(
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-            $columnUserId TEXT NOT NULL,
+            $columnUserId INTEGER NOT NULL,
             $columnFoodName TEXT NOT NULL,
             $columnFoodUnit TEXT NOT NULL,
             $columnFoodDate TEXT NOT NULL,
@@ -91,7 +91,7 @@ class DataBaseHelper {
         await db.execute('''
           CREATE TABLE $workoutTrackerTable (
           $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-          $columnWorkoutUserId TEXT NOT NULL,
+          $columnWorkoutUserId INTEGER NOT NULL,
           $columnWorkoutName TEXT NOT NULL,     
           $columnWorkoutTime TEXT NOT NULL,
           $columnWorkoutDate TEXT NOT NULL,
@@ -103,7 +103,7 @@ class DataBaseHelper {
         await db.execute('''
       CREATE TABLE $waterTrackerTable (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        $columnWaterUserId TEXT NOT NULL,
+        $columnWaterUserId INTEGER NOT NULL,
         $columnWaterGlass TEXT NOT NULL,
         $columnWaterDate TEXT NOT NULL,
         $columnWaterTime TEXT NOT NULL,
@@ -115,7 +115,7 @@ class DataBaseHelper {
         await db.execute('''
       CREATE TABLE $sleepTrackerTable (
         $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        $columnSleepUserId TEXT NOT NULL,
+        $columnSleepUserId INTEGER NOT NULL,
         $columnSleepTime TEXT NOT NULL,
         $columnWakeUpTime TEXT NOT NULL,
         $columnSleepDate TEXT NOT NULL,
@@ -164,23 +164,15 @@ class DataBaseHelper {
     return await db.insert(foodTrackerTable, food.toMap());
   }
 
-  Future<List<FoodModel>> getFoodTrackers() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps =
-        await db.query(foodTrackerTable); //foodTrackerTable
-    return List.generate(maps.length, (i) {
-      return FoodModel.fromMap(maps[i]);
-    });
+  Future<List<FoodModel>> getFoodTrackers(int userId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      foodTrackerTable,
+      where: 'userid = ?',
+      whereArgs: [userId],
+    );
+    return result.map((map) => FoodModel.fromMap(map)).toList();
   }
-  // Future<List<FoodModel>> getFoodEntriesByUserId(int userId) async {
-  //   final db = await instance.database;
-  //   final result = await db.query(
-  //     foodTrackerTable ,
-  //     where: 'userid = ?',
-  //     whereArgs: [userId],
-  //   );
-  //   return result.map((map) => FoodModel.fromMap(map)).toList();
-  // }
 
   Future<int> deleteFoodTracker(int id) async {
     final db = await database;
@@ -208,12 +200,14 @@ class DataBaseHelper {
     return await db.insert(workoutTrackerTable, workout.toMap());
   }
 
-  Future<List<WorkoutModel>> queryAllWorkoutTrackerEntitis() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(workoutTrackerTable);
-    return List.generate(maps.length, (i) {
-      return WorkoutModel.fromMap(maps[i]);
-    });
+  Future<List<WorkoutModel>> queryAllWorkoutTrackerEntitis(int userId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      workoutTrackerTable,
+      where: 'workUserId = ?',
+      whereArgs: [userId],
+    );
+    return result.map((map) => WorkoutModel.fromMap(map)).toList();
   }
 
   Future<int> deleteWorkoutTrackerEntity(int id) async {
@@ -242,12 +236,14 @@ class DataBaseHelper {
     return await db.insert(waterTrackerTable, water.toMap());
   }
 
-  Future<List<WaterModel>> queryAllWaterTrackerEntitis() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(waterTrackerTable);
-    return List.generate(maps.length, (i) {
-      return WaterModel.fromMap(maps[i]);
-    });
+  Future<List<WaterModel>> queryAllWaterTrackerEntitis(int userId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      waterTrackerTable,
+      where: 'waterUserId = ?',
+      whereArgs: [userId],
+    );
+    return result.map((map) => WaterModel.fromMap(map)).toList();
   }
 
   Future<int> deleteWaterTrackerEntity(int id) async {
@@ -276,12 +272,14 @@ class DataBaseHelper {
     return await db.insert(sleepTrackerTable, sleep.toMap());
   }
 
-  Future<List<SleepModel>> queryAllSleepTrackerEntitis() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(sleepTrackerTable);
-    return List.generate(maps.length, (i) {
-      return SleepModel.fromMap(maps[i]);
-    });
+  Future<List<SleepModel>> queryAllSleepTrackerEntitis(int userId) async {
+    final db = await instance.database;
+    final result = await db.query(
+      sleepTrackerTable,
+      where: 'sleepUserId = ?',
+      whereArgs: [userId],
+    );
+    return result.map((map) => SleepModel.fromMap(map)).toList();
   }
 
   Future<int> deleteSleepTrackerEntity(int id) async {

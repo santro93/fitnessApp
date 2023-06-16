@@ -1,6 +1,6 @@
 class SleepModel {
   final int? id;
-  final String sleepUserId;
+  final int? sleepUserId;
   final String sleepTime;
   final String wakeUpTime;
   final String sleepDate;

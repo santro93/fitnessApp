@@ -5,7 +5,8 @@ import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  int? userId;
+  UserProfileScreen({super.key, required this.userId});
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -14,13 +15,22 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
 //getUserById
   DataBaseHelper? database;
-  List<UserModel> usertable = [];
-  // Future<void> refreshFoodTrackers() async {
-  //   final List<UserModel> list = await database!.getUserById();
-  //   setState(() {
-  //     usertable = list;
-  //   });
-  // }
+  UserModel? usertable;
+
+  Future<void> refreshUserData() async {
+    UserModel? list = await database!.getUserById(widget.userId!);
+    setState(() {
+      usertable = list;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    database = DataBaseHelper.instance;
+    refreshUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +44,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DashboardScreen(),
+                  builder: (context) => DashboardScreen(userId: widget.userId),
                 ));
           },
           icon: const Icon(
@@ -43,8 +53,27 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
         ),
       ),
-      body: const Center(
-        child: Text('No Data Available'),
+      body: Padding(
+        padding: const EdgeInsets.all(98.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //  crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('My id: ${usertable!.id }'),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('My Name: ${usertable!.name}'),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('My email Id: ${usertable!.email}'),
+            const SizedBox(
+              height: 20,
+            ),
+            Text('My Mobile No: ${usertable!.mobile}'),
+          ],
+        ),
       ),
     );
   }

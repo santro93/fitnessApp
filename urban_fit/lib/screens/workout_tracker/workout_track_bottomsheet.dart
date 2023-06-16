@@ -4,8 +4,9 @@ import 'package:urban_fit/service/database_helper.dart';
 
 
 class WorkoutTrackBottomSheet extends StatefulWidget {
+  int? userId;
   void Function() addtrack;
-  WorkoutTrackBottomSheet({Key? key, required this.addtrack}) : super(key: key);
+  WorkoutTrackBottomSheet({Key? key, required this.addtrack, required this.userId});
   @override
   State<WorkoutTrackBottomSheet> createState() =>
       _WorkoutTrackBottomSheetState();
@@ -27,7 +28,7 @@ class _WorkoutTrackBottomSheetState extends State<WorkoutTrackBottomSheet> {
   Future<void> addWorkTracker() async {
     final WorkoutModel newWorkTracker = WorkoutModel(
       // id: 33,
-      workUserId: '1',
+      workUserId: widget.userId,
       workoutName: workoutNameController.text,
       workoutDate:
           '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',

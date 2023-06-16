@@ -1,6 +1,6 @@
 class WorkoutModel {
   final int? id;
-  final String workUserId;
+  final int? workUserId;
   final String workoutName;
   final String workoutDate;
   final String workoutTime;

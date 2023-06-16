@@ -1,6 +1,6 @@
 class WaterModel {
   final int? id;
-  final String waterUserId;
+    final int? waterUserId;
   final String waterGlass;
   final String waterDate;
   final String waterTime;

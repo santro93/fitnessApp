@@ -3,8 +3,10 @@ import 'package:urban_fit/model/sleep_tracker_model.dart';
 import 'package:urban_fit/service/database_helper.dart';
 
 class SleepTrackerBottomSheet extends StatefulWidget {
+  int? userId;
   void Function() addtrack;
-  SleepTrackerBottomSheet({Key? key, required this.addtrack}) : super(key: key);
+  SleepTrackerBottomSheet(
+      {Key? key, required this.addtrack, required this.userId});
   @override
   State<SleepTrackerBottomSheet> createState() => _SleepTrackBottomSheetState();
 }
@@ -25,7 +27,7 @@ class _SleepTrackBottomSheetState extends State<SleepTrackerBottomSheet> {
   Future<void> addWaterTracker() async {
     final SleepModel newSleepTracker = SleepModel(
       // id: 33,
-      sleepUserId: '1',
+      sleepUserId: widget.userId,
       sleepTime: sleepTimeController.text,
       wakeUpTime: wakeupTimeController.text,
       sleepDate:

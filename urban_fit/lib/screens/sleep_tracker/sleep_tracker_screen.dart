@@ -6,7 +6,8 @@ import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
 class SleepTrackerScreen extends StatefulWidget {
-  const SleepTrackerScreen({super.key});
+  int? userId;
+  SleepTrackerScreen({super.key, required this.userId});
 
   @override
   State<SleepTrackerScreen> createState() => _SleepTrackerScreenState();
@@ -24,7 +25,8 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
   }
 
   Future<void> refreshSleepTrackers() async {
-    final List<SleepModel> list = await database!.queryAllSleepTrackerEntitis();
+    final List<SleepModel> list =
+        await database!.queryAllSleepTrackerEntitis(widget.userId!);
     setState(() {
       sleepTrackers = list;
     });
@@ -38,7 +40,7 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
   void updateSleepTracker(int id) async {
     final SleepModel updatedSleepracker = SleepModel(
       id: 2,
-      sleepUserId: '2',
+      sleepUserId: widget.userId,
       sleepDate: '15-06-2023',
       sleepTime: '3:00 AM',
       wakeUpTime: '3:00 PM',
@@ -60,7 +62,7 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const DashboardScreen(),
+                  builder: (context) => DashboardScreen(userId: widget.userId),
                 ));
           },
           icon: const Icon(
@@ -141,6 +143,7 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: SafeArea(
             child: SleepTrackerBottomSheet(
+              userId: widget.userId,
               addtrack: () {
                 refreshSleepTrackers();
               },

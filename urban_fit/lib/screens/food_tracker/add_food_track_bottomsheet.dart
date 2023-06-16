@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:urban_fit/model/food_tracker_model.dart';
 import 'package:urban_fit/service/database_helper.dart';
 
-
 class FoodTrackBottomSheet extends StatefulWidget {
+  int? userId;
   void Function() addtrack;
-  FoodTrackBottomSheet({Key? key, required this.addtrack}) : super(key: key);
+  FoodTrackBottomSheet({Key? key, required this.addtrack, required this.userId})
+      : super(key: key);
   @override
   State<FoodTrackBottomSheet> createState() => _FoodTrackBottomSheetState();
 }
@@ -25,8 +26,8 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
 
   Future<void> addFoodTracker() async {
     final FoodModel newFoodTracker = FoodModel(
-      // id: 33,
-      userid: '1',
+     
+      userid: widget.userId,
       foodname: foodNameController.text,
       unit: foodUnitController.text,
       date: '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
@@ -62,6 +63,21 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
       });
     }
   }
+
+  // void updateFoodTracker(int id) async {
+  //   final FoodModel updatedFoodTracker = FoodModel(
+  //     userid: '2',
+  //     foodname: foodNameController.text,
+  //     unit: foodUnitController.text,
+  //     date: '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
+  //     time: selectedTime!.format(context),
+  //   );
+
+  //   await database!.updateFoodTracker(updatedFoodTracker);
+
+  //   widget.addtrack();
+  //   Navigator.pop(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
