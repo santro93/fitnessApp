@@ -20,9 +20,9 @@ class FoodModel {
       'id': id,
       'userid': userid,
       'foodname': foodname,
-      'unit': unit,
-      'date': date,
-      'time': time,
+      'foodunit': unit,
+      'fooddate': date,
+      'foodtime': time,
     };
   }
 
@@ -31,9 +31,9 @@ class FoodModel {
       id: map['id'],
       userid: map['userid'],
       foodname: map['foodname'],
-      unit: map['unit'],
-      date: map['date'],
-      time: map['time'],
+      unit: map['foodunit'],
+      date: map['fooddate'],
+      time: map['foodtime'],
     );
   }
 }

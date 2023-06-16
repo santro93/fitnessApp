@@ -53,7 +53,7 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CommonAppBar(
-        title: ('Work Tracker Screen'),
+        title: ('Sleep Tracker Screen'),
         backgroundColor: Colors.blue.shade200,
         leading: IconButton(
           onPressed: () {
@@ -94,9 +94,9 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('wakeUpTime is: ${sleepTracker.sleepTime}'),
+                      Text('sleep Time is: ${sleepTracker.sleepTime}'),
                       const SizedBox(height: 10),
-                      Text('wakeUpTime is: ${sleepTracker.wakeUpTime}'),
+                      Text('wakeup Time is: ${sleepTracker.wakeUpTime}'),
                     ],
                   ),
                   Row(

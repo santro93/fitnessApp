@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:urban_fit/assets/model/user_model.dart';
 import 'package:urban_fit/model/food_tracker_model.dart';
 import 'package:urban_fit/model/sleep_tracker_model.dart';
 import 'package:urban_fit/model/water_tracker_model.dart';
@@ -10,13 +11,20 @@ import 'package:urban_fit/model/workout_tracker_model.dart';
 class DataBaseHelper {
   static const _databaseName = 'Tracker.db';
   static const _databaseVersion = 1;
-  static const foodTrackerTable = 'food_Tracker';
+//
+  static const userMasterTable = 'user_Master';
   static const columnId = 'id';
+  static const columnName = 'name';
+  static const columnMobile = 'mobile';
+  static const columnEmail = 'email';
+  static const columnPassword = 'password';
+  //
+  static const foodTrackerTable = 'food_Tracker';
   static const columnUserId = 'userid';
   static const columnFoodName = 'foodname';
-  static const columnUnit = 'unit';
-  static const columnDate = 'date';
-  static const columnTime = 'time';
+  static const columnFoodUnit = 'foodunit';
+  static const columnFoodDate = 'fooddate';
+  static const columnFoodTime = 'foodtime';
 //
   static const workoutTrackerTable = 'workout_Tracker';
   static const columnWorkoutName = 'workoutName';
@@ -57,12 +65,12 @@ class DataBaseHelper {
       version: _databaseVersion,
       onCreate: (Database db, int version) async {
         await db.execute('''
-          CREATE TABLE user_master (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            mobile TEXT,
-            email TEXT,
-            password TEXT
+          CREATE TABLE $userMasterTable (
+            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+            $columnName TEXT,
+            $columnMobile TEXT,
+            $columnEmail TEXT,
+            $columnPassword TEXT
           )
         ''');
 
@@ -72,22 +80,22 @@ class DataBaseHelper {
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             $columnUserId TEXT NOT NULL,
             $columnFoodName TEXT NOT NULL,
-            $columnUnit TEXT NOT NULL,
-            $columnDate TEXT NOT NULL,
-            $columnTime TEXT NOT NULL
-        
+            $columnFoodUnit TEXT NOT NULL,
+            $columnFoodDate TEXT NOT NULL,
+            $columnFoodTime TEXT NOT NULL,
+            FOREIGN KEY (userid) REFERENCES user_master(id)
           )
         ''');
 
-        // Create workout tracker table   // $columnTime TEXT NOT NULL,
+        // Create workout tracker table   // $columnWorkoutUserId INTEGER NOT NULL,
         await db.execute('''
           CREATE TABLE $workoutTrackerTable (
           $columnId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           $columnWorkoutUserId TEXT NOT NULL,
           $columnWorkoutName TEXT NOT NULL,     
           $columnWorkoutTime TEXT NOT NULL,
-          $columnWorkoutDate TEXT NOT NULL
-     
+          $columnWorkoutDate TEXT NOT NULL,
+          FOREIGN KEY (workUserId) REFERENCES user_master(id)
       )
     ''');
 
@@ -98,7 +106,8 @@ class DataBaseHelper {
         $columnWaterUserId TEXT NOT NULL,
         $columnWaterGlass TEXT NOT NULL,
         $columnWaterDate TEXT NOT NULL,
-        $columnWaterTime TEXT NOT NULL
+        $columnWaterTime TEXT NOT NULL,
+        FOREIGN KEY (waterUserId) REFERENCES user_master(id)
       )
     ''');
 
@@ -109,12 +118,44 @@ class DataBaseHelper {
         $columnSleepUserId TEXT NOT NULL,
         $columnSleepTime TEXT NOT NULL,
         $columnWakeUpTime TEXT NOT NULL,
-        $columnSleepDate TEXT NOT NULL
+        $columnSleepDate TEXT NOT NULL,
+        FOREIGN KEY (sleepUserId) REFERENCES user_master(id)
       )
     ''');
-        //
       },
     );
+  }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+  Future<int> createUser(UserModel user) async {
+    final db = await instance.database;
+    return await db.insert(userMasterTable, user.toMap());
+  }
+
+  Future<List<UserModel>> getAllUsers() async {
+    final db = await instance.database;
+    final result = await db.query(userMasterTable);
+    return result.map((map) => UserModel.fromMap(map)).toList();
+  }
+
+  Future<UserModel?> getUserById(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      userMasterTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return result.isNotEmpty ? UserModel.fromMap(result.first) : null;
+  }
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final db = await instance.database;
+    final result = await db.query(
+      userMasterTable,
+      where: '$columnEmail = ?',
+      whereArgs: [email],
+    );
+    return result.isNotEmpty ? UserModel.fromMap(result.first) : null;
   }
 
 ///////////////////////////            food Tracker         /////////////////////////////
@@ -131,6 +172,15 @@ class DataBaseHelper {
       return FoodModel.fromMap(maps[i]);
     });
   }
+  // Future<List<FoodModel>> getFoodEntriesByUserId(int userId) async {
+  //   final db = await instance.database;
+  //   final result = await db.query(
+  //     foodTrackerTable ,
+  //     where: 'userid = ?',
+  //     whereArgs: [userId],
+  //   );
+  //   return result.map((map) => FoodModel.fromMap(map)).toList();
+  // }
 
   Future<int> deleteFoodTracker(int id) async {
     final db = await database;
