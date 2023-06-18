@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:urban_fit/model/sleep_tracker_model.dart';
 import 'package:urban_fit/screens/dashboard_screen.dart';
-import 'package:urban_fit/screens/sleep_tracker/sleep_track_bottomsheet.dart';
+import 'package:urban_fit/screens/sleep_tracker/add_sleep_track_bottomsheet.dart';
+import 'package:urban_fit/screens/sleep_tracker/update_sleep_track_bottomsheet.dart';
 import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
@@ -34,19 +35,6 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
 
   Future<void> deleteSleepTracker(int id) async {
     await database!.deleteSleepTrackerEntity(id);
-    refreshSleepTrackers();
-  }
-
-  void updateSleepTracker(int id) async {
-    final SleepModel updatedSleepracker = SleepModel(
-      id: 2,
-      sleepUserId: widget.userId,
-      sleepDate: '15-06-2023',
-      sleepTime: '3:00 AM',
-      wakeUpTime: '3:00 PM',
-    );
-
-    await database!.updateSleepTrackerEntity(updatedSleepracker);
     refreshSleepTrackers();
   }
 
@@ -96,16 +84,21 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('sleep Time is: ${sleepTracker.sleepTime}'),
+                      Text('Sleep Id: ${sleepTracker.id}'),
                       const SizedBox(height: 10),
-                      Text('wakeup Time is: ${sleepTracker.wakeUpTime}'),
+                      Text('Sleep Time: ${sleepTracker.sleepTime}'),
+                      const SizedBox(height: 10),
+                      Text('Wakeup Time: ${sleepTracker.wakeUpTime}'),
+                      const SizedBox(height: 10),
+                      Text('Date: ${sleepTracker.sleepDate}'),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {
-                          updateSleepTracker(sleepTracker.id!);
+                          _onClickUpdateSleepTrackerBottomSheet(
+                              sleepId: sleepTracker.id!);
                         },
                         icon: const Icon(Icons.edit),
                       ),
@@ -147,6 +140,45 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
               addtrack: () {
                 refreshSleepTrackers();
               },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onClickUpdateSleepTrackerBottomSheet({
+    int? sleepId,
+    // String? foodname,
+    // String? fooddate,
+    // String? foodtime,
+    // String? foodunit
+  }) async {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext bct) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: SafeArea(
+            child: UpdateSleepTrackBottomSheet(
+              addtrack: () {
+                refreshSleepTrackers();
+              },
+              userId: widget.userId,
+              sleepId: sleepId,
+              // foodname: foodname,
+              // fooddate: fooddate,
+              // foodtime: foodtime,
+              // foodunit: foodunit,
             ),
           ),
         );

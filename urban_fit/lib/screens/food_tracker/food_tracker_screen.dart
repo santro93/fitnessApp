@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:urban_fit/model/food_tracker_model.dart';
 import 'package:urban_fit/screens/dashboard_screen.dart';
-import 'package:urban_fit/screens/food_tracker/add_food_track_bottomsheet.dart';
+import 'package:urban_fit/screens/food_tracker/add_food_track_bottomsheet%20copy.dart';
+import 'package:urban_fit/screens/food_tracker/update_food_track_bottomsheet.dart';
 import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
@@ -30,24 +31,13 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
     setState(() {
       foodTrackers = list;
     });
-  }
-
-  void updateFoodTracker(int id) async {
-    final FoodModel updatedFoodTracker = FoodModel(
-      // userid: '2',
-      foodname: 'Banana',
-      unit: '1 piece',
-      date: '2023-06-15',
-      time: '3:00 PM',
-    );
-
-    await database!.updateFoodTracker(updatedFoodTracker);
-    refreshFoodTrackers();
+    print(foodTrackers.length);
   }
 
   Future<void> deleteFoodTracker(int id) async {
     await database!.deleteFoodTracker(id);
     refreshFoodTrackers();
+    setState(() {});
   }
 
   @override
@@ -72,7 +62,7 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: _onClickFoodTrackerBottomSheet,
+            onPressed: _onClickAddFoodTrackerBottomSheet,
             icon: const Icon(
               Icons.add_circle_outline_outlined,
               color: Colors.black,
@@ -96,16 +86,28 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(foodTracker.foodname),
+                      Text('Food Id: ${foodTracker.id}'),
+                      const SizedBox(height: 10),
+                      Text('Food Name: ${foodTracker.foodname}'),
                       const SizedBox(height: 10),
                       Text('Unit: ${foodTracker.unit}'),
+                      const SizedBox(height: 10),
+                      Text(
+                          'Date: ${foodTracker.date} At Time: ${foodTracker.time}'),
+                      const SizedBox(height: 10),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {
-                          updateFoodTracker(foodTracker.id!);
+                          _onClickUpdateFoodTrackerBottomSheet(
+                            foodId: foodTracker.id!,
+                            // foodname: foodTracker.foodname,
+                            // foodunit: foodTracker.unit,
+                            // fooddate: foodTracker.date,
+                            // foodtime: foodTracker.date,
+                          );
                         },
                         icon: const Icon(Icons.edit),
                       ),
@@ -126,7 +128,7 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
     );
   }
 
-  Future<void> _onClickFoodTrackerBottomSheet() async {
+  Future<void> _onClickAddFoodTrackerBottomSheet() async {
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -142,7 +144,7 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
           ),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: SafeArea(
-            child: FoodTrackBottomSheet(
+            child: AddFoodTrackBottomSheet(
               userId: widget.userId,
               addtrack: () {
                 refreshFoodTrackers();
@@ -154,30 +156,42 @@ class _FoodTrackerScreenState extends State<FoodTrackerScreen> {
     );
   }
 
-  // Future<void> _onClickUpdateFoodTrackerBottomSheet() async {
-  //   showModalBottomSheet(
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     context: context,
-  //     builder: (BuildContext bct) {
-  //       return Container(
-  //         decoration: const BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.only(
-  //             topLeft: Radius.circular(20),
-  //             topRight: Radius.circular(20),
-  //           ),
-  //         ),
-  //         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-  //         child: SafeArea(
-  //           child: FoodTrackBottomSheet(
-  //             addtrack: () {
-  //               refreshFoodTrackers();
-  //             },
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> _onClickUpdateFoodTrackerBottomSheet({
+    int? foodId,
+    // String? foodname,
+    // String? fooddate,
+    // String? foodtime,
+    // String? foodunit
+  }) async {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext bct) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: SafeArea(
+            child: UpdateFoodTrackBottomSheet(
+              addtrack: () {
+                refreshFoodTrackers();
+              },
+              userId: widget.userId,
+              foodId: foodId,
+              // foodname: foodname,
+              // fooddate: fooddate,
+              // foodtime: foodtime,
+              // foodunit: foodunit,
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

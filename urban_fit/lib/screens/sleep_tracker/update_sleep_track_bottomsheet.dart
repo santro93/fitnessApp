@@ -1,39 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:urban_fit/model/food_tracker_model.dart';
+import 'package:urban_fit/model/sleep_tracker_model.dart';
 import 'package:urban_fit/service/database_helper.dart';
 
-class FoodTrackBottomSheet extends StatefulWidget {
+class UpdateSleepTrackBottomSheet extends StatefulWidget {
   int? userId;
+  int? sleepId;
+
+  // String? sleepTime;
+  // String? wakeupTime;
+
   void Function() addtrack;
-  FoodTrackBottomSheet({Key? key, required this.addtrack, required this.userId})
-      : super(key: key);
+  UpdateSleepTrackBottomSheet({
+    Key? key,
+    required this.addtrack,
+    required this.userId,
+    required this.sleepId,
+    // required this.sleepTime,
+    // required this.wakeupTime,
+  }) : super(key: key);
   @override
-  State<FoodTrackBottomSheet> createState() => _FoodTrackBottomSheetState();
+  State<UpdateSleepTrackBottomSheet> createState() =>
+      _UpdateSleepTrackBottomSheetState();
 }
 
-class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
-  TextEditingController foodNameController = TextEditingController();
-  TextEditingController foodUnitController = TextEditingController();
+class _UpdateSleepTrackBottomSheetState
+    extends State<UpdateSleepTrackBottomSheet> {
+  TextEditingController sleepNameController = TextEditingController();
+  TextEditingController wakeupTimeController = TextEditingController();
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-
   DataBaseHelper? database;
+
   @override
   void initState() {
     super.initState();
     database = DataBaseHelper.instance;
   }
 
-  Future<void> addFoodTracker() async {
-    final FoodModel newFoodTracker = FoodModel(
-     
-      userid: widget.userId,
-      foodname: foodNameController.text,
-      unit: foodUnitController.text,
-      date: '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
-      time: selectedTime!.format(context),
+  void updateSleepTracker() async {
+    final SleepModel updatedSleepracker = SleepModel(
+      sleepUserId: widget.userId,
+      id: widget.sleepId,
+      sleepTime: sleepNameController.text,
+      wakeUpTime: wakeupTimeController.text,
+      sleepDate:
+          '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
     );
-    await database!.insertFoodTracker(newFoodTracker);
+
+    await database!.updateSleepTrackerEntity(updatedSleepracker);
     widget.addtrack();
     Navigator.pop(context);
   }
@@ -64,21 +78,6 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
     }
   }
 
-  // void updateFoodTracker(int id) async {
-  //   final FoodModel updatedFoodTracker = FoodModel(
-  //     userid: '2',
-  //     foodname: foodNameController.text,
-  //     unit: foodUnitController.text,
-  //     date: '${selectedDate!.day}-${selectedDate!.month}-${selectedDate!.year}',
-  //     time: selectedTime!.format(context),
-  //   );
-
-  //   await database!.updateFoodTracker(updatedFoodTracker);
-
-  //   widget.addtrack();
-  //   Navigator.pop(context);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Wrap(
@@ -92,7 +91,7 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
-                    'Add Food Track ',
+                    'Update Sleep Track ',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
@@ -105,24 +104,26 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
               height: 2,
             ),
             TextFormField(
+              // initialValue: widget.foodname!,
               keyboardType: TextInputType.name,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: foodNameController,
+              controller: sleepNameController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: "Enter Food Name",
+                labelText: "Enter Sleep Time",
               ),
             ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
+              // initialValue: widget.foodunit,
               keyboardType: TextInputType.name,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: foodUnitController,
+              controller: wakeupTimeController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: "Enter Food Unit",
+                labelText: "Enter Wakeup Time",
               ),
             ),
             const SizedBox(
@@ -159,7 +160,7 @@ class _FoodTrackBottomSheetState extends State<FoodTrackBottomSheet> {
             ),
             ElevatedButton(
               onPressed: () {
-                addFoodTracker();
+                updateSleepTracker();
               },
               child: const Text('Submit Info'),
             ),

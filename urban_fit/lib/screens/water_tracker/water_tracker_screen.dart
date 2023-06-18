@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:urban_fit/model/water_tracker_model.dart';
 import 'package:urban_fit/screens/dashboard_screen.dart';
-import 'package:urban_fit/screens/water_tracker/water_track_bottomsheet.dart';
+import 'package:urban_fit/screens/water_tracker/update_water_track_bottomsheet.dart';
+import 'package:urban_fit/screens/water_tracker/add_water_track_bottomsheet.dart';
 import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
@@ -25,23 +26,11 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
   }
 
   Future<void> refreshWaterTrackers() async {
-    final List<WaterModel> list = await database!.queryAllWaterTrackerEntitis(widget.userId!);
+    final List<WaterModel> list =
+        await database!.queryAllWaterTrackerEntitis(widget.userId!);
     setState(() {
       waterTrackers = list;
     });
-  }
-
-  void updateWaterTracker(int id) async {
-    final WaterModel updatedWaterTracker = WaterModel(
-      id: 2,
-      waterUserId: widget.userId,
-      waterDate: '2023-06-15',
-      waterTime: '3:00 PM',
-      waterGlass: 'f24',
-    );
-
-    await database!.updateWaterTrackerEntity(updatedWaterTracker);
-    refreshWaterTrackers();
   }
 
   Future<void> deleteWaterTracker(int id) async {
@@ -95,18 +84,22 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          'Water glasses drink date is : ${waterTracker.waterDate}'),
+                      Text('Water glasses drink Id: ${waterTracker.id}'),
                       const SizedBox(height: 10),
                       Text(
-                          'Water glasses quantity is : ${waterTracker.waterGlass}'),
+                          'Water glasses quantity: ${waterTracker.waterGlass}'),
+                      const SizedBox(height: 10),
+                      Text(
+                          'Date: ${waterTracker.waterDate} At Time: ${waterTracker.waterTime}'),
+                      const SizedBox(height: 10),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {
-                          updateWaterTracker(waterTracker.id!);
+                          _onClickUpdateWaterTrackerBottomSheet(
+                              waterId: waterTracker.id!);
                         },
                         icon: const Icon(Icons.edit),
                       ),
@@ -148,6 +141,37 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
               addtrack: () {
                 refreshWaterTrackers();
               },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onClickUpdateWaterTrackerBottomSheet({
+    int? waterId,
+  }) async {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext bct) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: SafeArea(
+            child: UpdateWaterTrackBottomSheet(
+              addtrack: () {
+                refreshWaterTrackers();
+              },
+              userId: widget.userId,
+              waterId: waterId,
             ),
           ),
         );

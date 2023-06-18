@@ -18,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   final RegExp _mobileRegex = RegExp(r'^[0-9]{10}$');
-  final RegExp _nameRegex = RegExp(r"^[A-Z].{5,}$");
+  final RegExp _nameRegex = RegExp(r"^[A-Za-z].{5,}$");
   final RegExp _passwordRegex = RegExp(r'^.{6,}$');
   final RegExp _emailRegex = RegExp(
       r'^[\w-]+(\.[\w-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,})$');
@@ -27,17 +27,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
   List<UserModel> usertable = [];
 
   Future<void> createUsers() async {
-    final UserModel createNewUser = UserModel(
-        // id: 33,
-        email: _emailController.text,
-        password: _passwordController.text,
-        name: _nameController.text,
-        mobile: _mobileController.text);
-    await database!.createUser(createNewUser);
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SigninPage()),
+    const snackBar = SnackBar(
+      content: Text("User Account is created"),
+      duration: Duration(milliseconds: 1000),
     );
+    if (_formKey.currentState!.validate()) {
+      final UserModel createNewUser = UserModel(
+          email: _emailController.text,
+          password: _passwordController.text,
+          name: _nameController.text,
+          mobile: _mobileController.text);
+      await database!.createUser(createNewUser);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SigninPage()),
+      );
+    } else {
+      const snackBar = SnackBar(
+          content: Text("User Account is not created"),
+          duration: Duration(milliseconds: 1000));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -103,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (value!.isEmpty) {
                           return 'Please enter a name';
                         } else if (!_nameRegex.hasMatch(value)) {
-                          return 'Please enter a valid name';
+                          return 'Enter name with 1st character capital & atleast 6 character';
                         }
                         return null;
                       },
@@ -122,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (value!.isEmpty) {
                           return 'Please enter a mobile number';
                         } else if (!_mobileRegex.hasMatch(value)) {
-                          return 'Please enter a valid 10-digit mobile number';
+                          return 'Please enter a 10-digit mobile number';
                         }
                         return null;
                       },
@@ -141,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (value!.isEmpty) {
                           return 'Please enter an email address';
                         } else if (!_emailRegex.hasMatch(value)) {
-                          return 'Please enter a valid email address';
+                          return 'Please enter a email address';
                         }
                         return null;
                       },
@@ -184,21 +195,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const Text(
-                    "Don't have an account ?",
+                    "Have an account?",
                     style: TextStyle(fontSize: 20, color: Colors.black),
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SigninPage()),
-                        );
-                      },
-                      child: const Text(
-                        'sign In',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ))
+                  _getButtonWidget(
+                    header: 'Sign In',
+                    textSize: 20,
+                    borderColor: Colors.black,
+                  ),
                 ],
               ),
               const SizedBox(
@@ -222,6 +226,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       onTap: () async {
         if (_formKey.currentState!.validate() && header == 'Sign Up') {
           createUsers();
+        }
+        if (header == 'Sign In') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SigninPage()),
+          );
         }
       },
       child: Container(

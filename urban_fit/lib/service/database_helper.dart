@@ -219,13 +219,13 @@ class DataBaseHelper {
     );
   }
 
-  Future<int> updateWorkoutTrackerEntity(WorkoutModel water) async {
+  Future<int> updateWorkoutTrackerEntity(WorkoutModel workout) async {
     final db = await database;
     return await db.update(
-      waterTrackerTable,
-      water.toMap(),
+      workoutTrackerTable,
+      workout.toMap(),
       where: '$columnId = ?',
-      whereArgs: [water.id],
+      whereArgs: [workout.id],
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:urban_fit/model/workout_tracker_model.dart';
-import 'package:urban_fit/screens/workout_tracker/workout_track_bottomsheet.dart';
+import 'package:urban_fit/screens/workout_tracker/add_workout_track_bottomsheet.dart';
+import 'package:urban_fit/screens/workout_tracker/update_workoutr_track_bottomsheet.dart';
 import 'package:urban_fit/service/database_helper.dart';
 import 'package:urban_fit/utils/commom_widgets/common_appbar.dart';
 
@@ -31,19 +32,6 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
     setState(() {
       workTrackers = list;
     });
-  }
-
-  void updateWorkoutTracker(int id) async {
-    final WorkoutModel updatedWorkoutTracker = WorkoutModel(
-      id: 2,
-      workUserId: widget.userId,
-      workoutName: 'Dum Bells',
-      workoutTime: '3:00 PM',
-      workoutDate: '2023-06-15',
-    );
-
-    await database!.updateWorkoutTrackerEntity(updatedWorkoutTracker);
-    refreshWorkoutTrackers();
   }
 
   Future<void> deleteWorkoutTracker(int id) async {
@@ -97,16 +85,21 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Workout Name is: ${workoutTracker.workoutName}'),
+                      Text('Workout Id: ${workoutTracker.id}'),
                       const SizedBox(height: 10),
-                      Text('Workout Date is: ${workoutTracker.workoutDate}'),
+                      Text('Workout Name: ${workoutTracker.workoutName}'),
+                      const SizedBox(height: 10),
+                      Text(
+                          'Date: ${workoutTracker.workoutDate} at Time: ${workoutTracker.workoutDate}'),
+                      const SizedBox(height: 10),
                     ],
                   ),
                   Row(
                     children: [
                       IconButton(
                         onPressed: () {
-                          updateWorkoutTracker(workoutTracker.id!);
+                          _onClickUpdateWorkoutTrackerBottomSheet(
+                              workoutId: workoutTracker.id!);
                         },
                         icon: const Icon(Icons.edit),
                       ),
@@ -148,6 +141,37 @@ class _WorkoutTrackerScreenState extends State<WorkoutTrackerScreen> {
               addtrack: () {
                 refreshWorkoutTrackers();
               },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onClickUpdateWorkoutTrackerBottomSheet({
+    int? workoutId,
+  }) async {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext bct) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          child: SafeArea(
+            child: UpdateWorkoutTrackBottomSheet(
+              userId: widget.userId,
+              updateTrack: () {
+                refreshWorkoutTrackers();
+              },
+              workoutId: workoutId,
             ),
           ),
         );
